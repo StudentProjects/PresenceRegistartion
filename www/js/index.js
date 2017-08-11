@@ -30,7 +30,7 @@ app.initialize = function() {
 app.initBroadcastBtn = function() {
     document.getElementById("btn").addEventListener("click", function(){
         var uuid = '67839326-9777-4f62-aab8-5652bc90bcc3';
-        var identifier = 'JonasBeacon';
+        var identifier = 'Beacon';
         var major = 1;
         var minor = 1;
         var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(identifier, uuid, major, minor);
@@ -61,8 +61,9 @@ app.initBroadcastBtn = function() {
                             if(isAdvertising){
                                 cordova.plugins.locationManager.stopAdvertising()
                                     .then(alert)
-                                        .fail(alert)
-                                        .done();
+                                    .fail(alert)
+                                    .done();
+                                document.getElementById("btn").innerHTML = "Starta broadcast";
                             } else {
                                 cordova.plugins.locationManager.startAdvertising(beaconRegion)
                                     .then(function(result){
@@ -71,7 +72,8 @@ app.initBroadcastBtn = function() {
                                     })
                                     .fail(alert)
                                     .done();
-                                }
+                                document.getElementById("btn").innerHTML = "Stoppa broadcast";
+                            }
                         })
                         .fail(alert)
                         .done();
@@ -109,7 +111,7 @@ app.initScanBtn = function(){
 };
     
 app.deviceFound = function(deviceInfo){
-    if (!app.beaconFound && deviceInfo.rssi < 0 && deviceInfo.name == "Beacon"){
+    if (!app.beaconFound && deviceInfo.rssi < 0 && deviceInfo.rssi > -50 /*&& deviceInfo.name == "Beacon"*/){
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://www.google.se/robots.txt', true);
         xhr.setRequestHeader('Access-Control-Allow-Origin', true);
@@ -120,7 +122,7 @@ app.deviceFound = function(deviceInfo){
             var OK = 200; // status 200 is a successful return.
             if (xhr.readyState === DONE) {
                 if (xhr.status === OK) {
-                    console.log(xhr.responseText); // 'This is the returned text.'
+                    alert(xhr.responseText); // 'This is the returned text.'
                 } else {
                     console.log('Error: ' + xhr.status + ' ' + xhr.statusText); // An error occurred during the request.
                 }
